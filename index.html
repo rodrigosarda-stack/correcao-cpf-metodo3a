@@ -312,8 +312,8 @@
                 // Enviar CPF corrigido para o n8n
                 const cpfLimpo = cpf.replace(/\D/g, '');
                 
-                // IMPORTANTE: Substituir SEU_DOMINIO_N8N pela URL real do seu n8n
-                const n8nUrl = `https://SEU_DOMINIO_N8N/webhook/corrigir-cpf?response_id=${responseId}&cpf=${cpfLimpo}&tipo=${tipo}&plano=${plano}`;
+                // URL do n8n configurada
+                const n8nUrl = `https://n8n.metodo3amedico.com.br/webhook/corrigir-cpf?response_id=${responseId}&cpf=${cpfLimpo}&tipo=${tipo}&plano=${plano}`;
                 
                 const response = await fetch(n8nUrl, { 
                     method: 'GET',
