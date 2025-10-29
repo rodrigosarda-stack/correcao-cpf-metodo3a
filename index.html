@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção de CPF - Método 3a Médico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .alert-message {
+            color: #856404;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .contact {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .contact p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .contact a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .contact a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🏥 Método 3a Médico</h1>
+            <p>Correção de Dados</p>
+        </div>
+        
+        <div class="alert">
+            <div class="alert-title">⚠️ CPF Inválido</div>
+            <div class="alert-message">
+                O CPF informado (<strong id="cpf-invalido"></strong>) não passou na validação.
+                Por favor, insira o CPF correto abaixo.
+            </div>
+        </div>
+        
+        <form id="cpf-form">
+            <div class="form-group">
+                <label for="cpf">CPF Correto *</label>
+                <input 
+                    type="text" 
+                    id="cpf" 
+                    name="cpf" 
+                    placeholder="000.000.000-00"
+                    maxlength="14"
+                    required
+                >
+                <div class="input-hint">
+                    Digite apenas números ou use a formatação: 000.000.000-00
+                </div>
+            </div>
+            
+            <button type="submit" class="btn" id="submit-btn">
+                Validar e Continuar
+            </button>
+            
+            <div class="error-message" id="error-message"></div>
+            <div class="success-message" id="success-message"></div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Validando CPF...</p>
+            </div>
+        </form>
+        
+        <div class="contact">
+            <p>Precisa de ajuda?</p>
+            <a href="https://wa.me/5548974002997" target="_blank">
+                📱 Fale conosco no WhatsApp
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Obter parâmetros da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const cpfInvalido = urlParams.get('cpf') || 'não informado';
+        const responseId = urlParams.get('response_id') || '';
+        const tipo = urlParams.get('tipo') || 'consultorio';
+        const plano = urlParams.get('plano') || 'anual';
+        
+        // Exibir CPF inválido
+        document.getElementById('cpf-invalido').textContent = cpfInvalido;
+        
+        // Máscara de CPF
+        const cpfInput = document.getElementById('cpf');
+        cpfInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length <= 11) {
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            }
+            e.target.value = value;
+        });
+        
+        // Validar CPF (algoritmo brasileiro)
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            
+            if (cpf.length !== 11) return false;
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+            
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = soma % 11;
+            let dv1 = resto < 2 ? 0 : 11 - resto;
+            
+            if (dv1 !== parseInt(cpf.charAt(9))) return false;
+            
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = soma % 11;
+            let dv2 = resto < 2 ? 0 : 11 - resto;
+            
+            return dv2 === parseInt(cpf.charAt(10));
+        }
+        
+        // Enviar formulário
+        document.getElementById('cpf-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const cpf = cpfInput.value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const loading = document.getElementById('loading');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            // Limpar mensagens
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Validar CPF
+            if (!validarCPF(cpf)) {
+                errorMessage.textContent = '❌ CPF inválido. Verifique os dígitos e tente novamente.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Mostrar loading
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            
+            try {
+                // Enviar CPF corrigido para o n8n
+                const cpfLimpo = cpf.replace(/\D/g, '');
+                
+                // IMPORTANTE: Substituir SEU_DOMINIO_N8N pela URL real do seu n8n
+                const n8nUrl = `https://SEU_DOMINIO_N8N/webhook/corrigir-cpf?response_id=${responseId}&cpf=${cpfLimpo}&tipo=${tipo}&plano=${plano}`;
+                
+                const response = await fetch(n8nUrl, { 
+                    method: 'GET',
+                    redirect: 'manual'
+                });
+                
+                // Sucesso - mostrar mensagem e redirecionar
+                successMessage.textContent = '✅ CPF validado! Redirecionando...';
+                successMessage.style.display = 'block';
+                
+                // Aguardar 1 segundo e redirecionar
+                setTimeout(() => {
+                    window.location.href = n8nUrl;
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                errorMessage.textContent = '❌ Erro ao processar. Tente novamente ou entre em contato.';
+                errorMessage.style.display = 'block';
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
